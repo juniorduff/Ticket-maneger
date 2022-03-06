@@ -16,6 +16,14 @@ enum Role {
   ADMIN
 }
 
+enum MuscleGroup {
+  DORSAL
+  PEITORAL
+  PERNA
+  BRACO
+}
+
+
 
 
 model User {
@@ -32,4 +40,16 @@ model User {
   created_at DateTime @default(now())
   updated_at DateTime? @updatedAt
   permission Role
+}
+
+model Exercise{
+
+id String @default(uuid()) @id
+name String
+muscle_group MuscleGroupyan
+image_url String?
+video_url String?
+description String
+created_at DateTime @default(now())
+updated_at DateTime? @updatedAt
 }

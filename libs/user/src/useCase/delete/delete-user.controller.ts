@@ -10,7 +10,7 @@ class DeleteUserController {
     private readonly userRepository: IUserRepositoryImplementation,
   ) {}
 
-  @Delete(':user_id')
+  @Delete('/:user_id')
   async handle(@Param() user_id: string): Promise<void> {
     return this.deleteUserUseCase.execute({ user_id });
   }

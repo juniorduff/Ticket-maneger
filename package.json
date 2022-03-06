@@ -79,7 +79,8 @@
       "<rootDir>/libs/"
     ],
     "moduleNameMapper": {
-      "^User/user(|/.*)$": "<rootDir>/libs/user/src/$1"
+      "^User/user(|/.*)$": "<rootDir>/libs/user/src/$1",
+      "^exercise/exercise(|/.*)$": "<rootDir>/libs/exercise/src/$1"
     }
   }
 }

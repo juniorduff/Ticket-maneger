@@ -23,6 +23,12 @@
       ],
       "User/user/*": [
         "libs/user/src/*"
+      ],
+      "exercise/exercise": [
+        "libs/exercise/src"
+      ],
+      "exercise/exercise/*": [
+        "libs/exercise/src/*"
       ]
     }
   }
