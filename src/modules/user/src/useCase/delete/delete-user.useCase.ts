@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { IUserRepositoryAdapter } from '../../infra/implementation/user.repository.adapter';
 import { UserRepository } from '../../infra/repository/user.repository';
 type Request = {
@@ -10,8 +10,13 @@ class DeleteUserUseCase {
     @Inject(UserRepository)
     private readonly userRepository: IUserRepositoryAdapter,
   ) {}
-  execute({ user_id }: Request) {
-    return this.userRepository.delete(user_id);
+  async execute({ user_id }: Request): Promise<void> {
+    const user = await this.userRepository.findById(user_id);
+    console.log(user);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    await this.userRepository.delete(user_id);
   }
 }
 

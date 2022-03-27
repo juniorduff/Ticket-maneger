@@ -1,5 +1,5 @@
 import { CreateUserDto } from '../../Swagger/dto/create-user.dto';
-import { Inject, Injectable } from '@nestjs/common';
+import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { IUserRepositoryAdapter } from '../../infra/implementation/user.repository.adapter';
 import { UserRepository } from '../../infra/repository/user.repository';
 import { User } from '@prisma/client/index';
@@ -10,8 +10,14 @@ class CreateUserUseCase {
     private readonly userRepository: IUserRepositoryAdapter,
   ) {}
 
-  execute(userDTO: CreateUserDto): Promise<User> {
-    console.log(userDTO);
+  async execute(userDTO: CreateUserDto): Promise<User> {
+    const { email } = userDTO;
+    const user = await this.userRepository.findIfAlreadyExistsEmail(email);
+
+    if (user) {
+      throw new ConflictException(`Email already exists`);
+    }
+
     return this.userRepository.create(userDTO);
   }
 }

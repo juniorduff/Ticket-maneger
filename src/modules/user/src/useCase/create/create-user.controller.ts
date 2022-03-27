@@ -11,6 +11,8 @@ class CreateUserController {
   @Post()
   async handle(@Body() userDTO: CreateUserDto, @Res() response: Response) {
     const user = await this.createUserService.execute(userDTO);
+    delete user.password;
+
     return response.status(HttpStatus.CREATED).json({ user });
   }
 }

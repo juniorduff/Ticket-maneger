@@ -15,7 +15,7 @@ class FindUserUseCase {
     const user = await this.userRepository.findById(user_id);
 
     if (!user) {
-      throw new NotFoundException('user2 is not found');
+      throw new NotFoundException('user is not found');
     }
     return user;
   }

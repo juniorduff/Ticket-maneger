@@ -4,20 +4,32 @@ import { User } from '@prisma/client';
 import { hashSync } from 'bcrypt';
 import { CreateUserDto } from '../../Swagger/dto/create-user.dto';
 import { BadRequestException, Injectable } from '@nestjs/common';
+
 @Injectable()
 class UserRepository implements IUserRepositoryAdapter {
   constructor(private readonly prisma: PrismaService) {}
   private userRepository = this.prisma.user;
-
   async create(user: CreateUserDto): Promise<User> {
-    user.password = hashSync(user.password, 8);
-
     return this.userRepository
       .create({
-        data: { ...user },
+        data: {
+          ...user,
+          password: hashSync(user.password, 10),
+        },
       })
-      .catch((error) => {
-        throw new BadRequestException(error.message);
+      .catch((err) => {
+        throw new BadRequestException(err.message);
+      });
+  }
+  async findIfAlreadyExistsEmail(email: string): Promise<User> {
+    return this.userRepository
+      .findUnique({
+        where: {
+          email,
+        },
+      })
+      .catch((err) => {
+        throw new BadRequestException(err.message);
       });
   }
 
