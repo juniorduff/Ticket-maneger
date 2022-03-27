@@ -1,8 +1,9 @@
 import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
-import { CreateUserUseCase } from 'User/user/useCase/create/create-user.useCase';
-import { CreateUserDto } from 'User/user/Swagger/dto/create-user.dto';
+import { CreateUserUseCase } from './create-user.useCase';
+import { CreateUserDto } from '../../Swagger/dto/create-user.dto';
 import { Response } from 'express';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('User')
 @Controller('User')
 class CreateUserController {
   constructor(private readonly createUserService: CreateUserUseCase) {}

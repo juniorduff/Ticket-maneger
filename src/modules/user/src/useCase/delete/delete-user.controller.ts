@@ -1,13 +1,15 @@
-import { DeleteUserUseCase } from 'User/user/useCase/delete/delete-user.useCase';
+import { DeleteUserUseCase } from './delete-user.useCase';
 import { Controller, Delete, Inject, Injectable, Param } from '@nestjs/common';
-import { IUserRepositoryImplementation } from 'User/user/infra/implementation/user.repository.implementation';
-import { UserRepository } from 'User/user/infra/repository/user.repository';
+import { IUserRepositoryAdapter } from '../../infra/implementation/user.repository.adapter';
+import { UserRepository } from '../../infra/repository/user.repository';
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('User')
 @Controller('user')
 class DeleteUserController {
   constructor(
     private readonly deleteUserUseCase: DeleteUserUseCase,
     @Inject(UserRepository)
-    private readonly userRepository: IUserRepositoryImplementation,
+    private readonly userRepository: IUserRepositoryAdapter,
   ) {}
 
   @Delete('/:user_id')

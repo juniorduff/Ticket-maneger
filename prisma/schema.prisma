@@ -17,39 +17,158 @@ enum Role {
 }
 
 enum MuscleGroup {
+  ADUTORES
   DORSAL
   PEITORAL
   PERNA
-  BRACO
+  TRAPEZIO
+  DELTOIDE
+  BICEPS
+  TRICEPS
+  PANTURRILHA
+  QUADRICEPS
+  ISQUIOTIBIAIS
+  TIBIAS
+  GLUTEOS
+  ANTEBRACO
 }
-
-
-
 
 model User {
-  id    String    @default(uuid()) @id
-  email String  @unique
-  name  String?
-  cpf   String
-  age   Int
-  weight  Decimal
-  password String
-  restriction String
-  goal  String
-  date_of_birth DateTime
-  created_at DateTime @default(now())
-  updated_at DateTime? @updatedAt
-  permission Role
+  id             String         @id @default(uuid())
+  email          String         @unique
+  name           String
+  cpf            String
+  age            Int?
+  weight         Decimal?
+  password       String
+  restriction    String?
+  goal           String?
+  date_of_birth  DateTime?
+  created_at     DateTime       @default(now())
+  updated_at     DateTime?      @updatedAt
+  permission     Role
+  training       TrainingUser[] @relation("student_training")
+  training_coach TrainingUser[] @relation("coach_training")
+  physical_assesment_coach Physical_assesment[] @relation("coach_physical_assesment")
+  physical_assesment_student Physical_assesment[] @relation("student_physical_assesment")
+  @@map("user")
 }
 
-model Exercise{
+model Exercise {
 
-id String @default(uuid()) @id
-name String
-muscle_group MuscleGroupyan
-image_url String?
-video_url String?
-description String
-created_at DateTime @default(now())
-updated_at DateTime? @updatedAt
+  id           String         @id @default(uuid())
+  name         String
+  muscle_group MuscleGroup
+  image_url    String?
+  video_url    String?
+  description  String
+  created_at   DateTime       @default(now())
+  updated_at   DateTime?      @updatedAt
+  training TrainingExercises[]
+    @@map("exercise")
+
+}
+
+model Training {
+  id         String         @id @default(uuid())
+  goal       String?
+  repetition Int
+  series     Int
+  load       Int
+  interval   Int
+  poditions  String
+  note       String?
+  created_at DateTime       @default(now())
+  updated_at DateTime?      @updatedAt
+  training   TrainingUser[]
+  training_exercises   TrainingExercises[]
+    @@map("training")
+}
+
+model TrainingExercises {
+  id          String    @id @default(uuid())
+  goal        String
+  created_at  DateTime  @default(now())
+  exercise    Exercise  @relation(fields: [exercise_id], references: [id])
+  training    Training  @relation(fields: [training_id], references: [id])
+  exercise_id String
+  training_id String
+  updated_at  DateTime? @updatedAt
+
+  @@map("training_exercises")
+}
+
+model TrainingUser {
+  id           String    @id @default(uuid())
+  avaliable_at DateTime
+  training     Training  @relation(fields: [training_id], references: [id])
+  coach        User      @relation("coach_training", fields: [coach_id], references: [id])
+  student      User      @relation("student_training", fields: [student_id], references: [id])
+  student_id   String
+  coach_id     String
+  training_id  String
+  created_at   DateTime  @default(now())
+  updated_at   DateTime? @updatedAt
+
+  @@map("training_user")
+}
+
+model Measurement {
+  id           String    @id @default(uuid())
+  created_at   DateTime  @default(now() )
+  updated_at   DateTime? @updatedAt
+  pollock    Boolean     @default(false)
+  guedes     Boolean     @default(false)
+  weltman    Boolean     @default(false)
+  Bioimpedance Boolean @default(false)
+  weight       Decimal?
+  height       Decimal?
+  shoulders       Decimal?
+  waist        Decimal?
+  hip          Decimal?
+  neck         Decimal?
+  goal_fat      Decimal?
+  subscapularis Decimal?
+  chest        Decimal?
+  triceps      Decimal?
+  middle_axillary Decimal?
+  abdominal  Decimal?
+  ideal_fat Decimal?
+  current_fat Decimal?
+  fat_weight Decimal?
+  forearm_right     Decimal?
+  forearm_left    Decimal?
+  contracted_arm_right Decimal?
+  contracted_arm_left Decimal?
+  relaxed_arm_right Decimal?
+  relaxed_arm_left Decimal?
+  fist Decimal?
+  femur Decimal?
+  humerus Decimal?
+  lean_weight Decimal?
+  ideal_weight Decimal?
+  imc Decimal?
+  thigh        Decimal?
+  supra_iliac  Decimal?
+  proximal_thigh_rigth    Decimal?
+  medial_thigh_rigth   Decimal?
+  distal_thigh_rigth   Decimal?
+  calves_rigth  Decimal?
+  Physical_assesment Physical_assesment?
+
+
+  @@map("measurement")
+}
+model Physical_assesment {
+  id           String    @id @default(uuid())
+  created_at   DateTime  @default(now())
+  updated_at   DateTime? @updatedAt
+  note         String?
+  measurement  Measurement @relation(fields: [measurement_id], references: [id])
+  student   User      @relation("student_physical_assesment", fields: [student_id], references: [id])
+  student_id   String
+  coach   User    @relation("coach_physical_assesment", fields: [coach_id], references: [id])
+  coach_id     String
+  measurement_id String
+  @@map("physical_assesment")
 }
